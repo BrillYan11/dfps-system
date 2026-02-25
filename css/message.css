@@ -1,0 +1,543 @@
+/* --- Facebook Messenger Style --- */
+
+/* Force layout to fill screen and prevent double scrollbars */
+html.messaging-page, body.messaging-page {
+    height: 100%;
+    margin: 0;
+    overflow: hidden !important;
+}
+
+body.messaging-page {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header is already there, so we just need the wrapper to take the rest */
+.messaging-wrapper {
+    flex-grow: 1;
+    display: flex;
+    height: calc(100vh - 56px); /* Adjust for header height */
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.messaging-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Conversations List (Left Pane) */
+.conversations-list-panel {
+    width: 360px;
+    border-right: 1px solid #e5e5e5;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    flex-shrink: 0;
+}
+
+.conversations-header {
+    padding: 20px 16px 10px 16px;
+}
+
+.conversations-header h4 {
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin: 0;
+    color: #050505;
+}
+
+.conversations-scroll {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 8px;
+}
+
+/* Individual conversation item */
+.conv-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-decoration: none !important;
+    color: #050505 !important;
+    transition: background-color 0.1s ease;
+    margin-bottom: 2px;
+}
+
+.conv-item:hover {
+    background-color: #f2f2f2;
+}
+
+.conv-item.active {
+    background-color: #ebf5ff;
+}
+
+.conv-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #0084ff; /* Simple solid color for reliability */
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.conv-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.conv-name {
+    font-weight: 600;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conv-last-msg {
+    font-size: 0.8125rem;
+    color: #65676b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Message Viewer (Center Pane) */
+.message-viewer-panel {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    min-width: 0;
+}
+
+    .chat-header {
+        padding: 0 16px;
+        height: 60px;
+        border-bottom: 1px solid #e5e5e5;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Styles for the new chat menu dropdown */
+    .chat-menu-dropdown .dropdown-toggle::after {
+        display: none; /* Hide default caret */
+    }
+    .chat-menu-dropdown .dropdown-menu {
+        left: 0 !important; /* Align to the left of the button */
+    }
+    .chat-menu-dropdown .dropdown-header {
+        font-weight: bold;
+        color: #6c757d;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .chat-header h6 {
+        font-weight: 700;
+        margin: 0;
+        font-size: 1rem;
+    }
+.message-container {
+    flex-grow: 1;
+    padding: 16px 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    gap: 4px;
+}
+
+/* Message Row for layout */
+.message-row {
+    display: flex;
+    max-width: 85%;
+    margin-bottom: 4px;
+    align-items: flex-start; /* Changed from flex-end */
+    position: relative;
+}
+.message-row.sent {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message-row.received {
+    align-self: flex-start;
+}
+
+/* Small Avatar */
+.message-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #e4e6eb;
+    color: #65676b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-right: 8px;
+    flex-shrink: 0;
+    margin-top: 8px; /* Added to align with message body's content */
+}
+
+.sent .message-avatar {
+    margin-right: 0;
+    margin-left: 8px;
+}
+
+/* Message Bubbles */
+.message {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.message.sent {
+    align-items: flex-end;
+}
+
+.message.received {
+    align-items: flex-start;
+}
+
+.message-body {
+    padding: 8px 12px;
+    border-radius: 18px;
+    font-size: 0.9375rem;
+    line-height: 1.3333;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+}
+
+.sent .message-body {
+    background-color: #0084ff;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.received .message-body {
+    background-color: #f0f0f0;
+    color: #050505;
+    border-bottom-left-radius: 4px;
+}
+
+.message-deleted {
+    font-style: italic;
+    opacity: 0.7;
+    background-color: transparent !important;
+    border: 1px solid #e5e5e5 !important;
+    color: #65676b !important;
+}
+
+.message-time {
+    font-size: 0.7rem;
+    color: #65676b;
+    margin-top: 4px;
+    padding: 0 8px;
+}
+
+/* Message Actions (Unsend/Delete) */
+.message-actions {
+    opacity: 0.15;
+    transition: opacity 0.2s ease;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 4px;
+}
+
+.sent .message-actions {
+    left: -40px;
+}
+
+.received .message-actions {
+    right: -40px;
+}
+
+.message-row:hover .message-actions {
+    opacity: 1;
+}
+
+.action-icon-btn {
+    background: none;
+    border: none;
+    color: #65676b;
+    padding: 4px;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.action-icon-btn:hover {
+    background-color: #f2f2f2;
+    color: #050505;
+}
+
+
+/* ===== Right-side "Details" panel (matches screenshot style) ===== */
+.conversation-info-panel{
+  background:#fff;
+  border-left:1px solid #e9ecef;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  transition: width 0.3s ease, transform 0.3s ease;
+  overflow: hidden;
+}
+
+@media (min-width: 992px) {
+    .conversation-info-panel {
+        width: 0;
+        border-left: none;
+    }
+    .conversation-info-panel.show {
+        width: 320px;
+        border-left: 1px solid #e9ecef;
+    }
+}
+
+/* header */
+.info-panel-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 16px;
+  border-bottom:1px solid #f1f3f5;
+}
+
+.info-panel-title{
+  margin:0;
+  font-size:16px;
+  font-weight:700;
+  color:#111;
+}
+
+.back-btn{
+  border-radius:999px;
+}
+
+/* body */
+.info-panel-content{
+  padding:22px 18px;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+
+/* avatar circle */
+.info-avatar{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:#0d6efd;          /* blue circle */
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  letter-spacing:.5px;
+  font-size:22px;
+  margin-bottom:14px;
+}
+
+/* name + role */
+.info-name{
+  font-size:18px;
+  font-weight:800;
+  color:#111;
+  margin:0 0 4px 0;
+}
+
+.info-role{
+  font-size:13px;
+  color:#6c757d;
+  font-weight:600;
+  margin-bottom:18px;
+}
+
+/* action list container */
+.info-actions{
+  width:100%;
+  max-width:320px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:6px;
+}
+
+/* rows like "location" and "member since" */
+.info-action-btn{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:10px;
+  background:#fff;
+  border:1px solid transparent;
+  color:#111;
+  text-decoration:none;
+  justify-content:flex-start;
+  font-size:14px;
+  font-weight:600;
+  text-align:left;
+}
+
+.info-action-btn i{
+  font-size:18px;
+  color:#343a40;
+  width:22px;
+  display:flex;
+  justify-content:center;
+}
+
+.info-action-btn span{
+  flex:1;
+  line-height:1.2;
+}
+
+/* subtle hover like a settings panel */
+.info-action-btn:hover{
+  background:#f8f9fa;
+  border-color:#f1f3f5;
+}
+
+/* divider line */
+.info-actions hr{
+  border:none;
+  border-top:1px solid #e9ecef;
+  margin:8px 0 2px 0;
+}
+
+/* delete row (red like screenshot) */
+.info-action-btn.danger{
+  color:#dc3545;
+}
+
+.info-action-btn.danger i{
+  color:#dc3545;
+}
+
+.info-action-btn.danger:hover{
+  background:#fff5f5;
+  border-color:#ffe3e3;
+}
+
+/* ===== Mobile slide-in behavior (optional, if you're using .show) ===== */
+@media (max-width: 991.98px){
+  .conversation-info-panel{
+    position:fixed;
+    top:0;
+    right:-100%;
+    width:86%;
+    max-width:360px;
+    z-index:1050;
+    box-shadow:-12px 0 28px rgba(0,0,0,.08);
+    transition:right .25s ease;
+  }
+  .conversation-info-panel.show{
+    right:0;
+  }
+}
+
+/* Input Area */
+.chat-footer {
+    padding: 12px 16px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.message-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.message-input {
+    flex-grow: 1;
+    border-radius: 20px;
+    border: none;
+    padding: 9px 16px;
+    background: #f0f2f5;
+    outline: none !important;
+    resize: none;
+    max-height: 140px;
+    font-size: 0.9375rem;
+}
+
+.send-btn {
+    background: none;
+    border: none;
+    color: #0084ff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mobile Responsive */
+@media (max-width: 991.98px) {
+    /* .conversation-info-panel will be controlled by JS for mobile overlay */
+    .conversation-info-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%; /* Take full width on small screens */
+        max-width: 320px; /* Max width to mimic desktop width */
+        z-index: 1050; /* Above message content, below modal backdrop */
+        transform: translateX(100%); /* Start off-screen to the right */
+        border-left: none; /* Remove border when it's an overlay */
+        padding-top: 60px; /* Space for chat header */
+    }
+
+    .conversation-info-panel.show {
+        transform: translateX(0); /* Slide in */
+        width: 100%;
+    }
+
+    /* Mobile-specific positioning for info-panel-header */
+    .info-panel-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+    }
+
+    /* Adjust info-panel-content padding for absolute header on mobile */
+    .info-panel-content {
+        padding-top: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .conversations-list-panel {
+        width: 80px;
+    }
+    .conv-info, .conversations-header h4 {
+        display: none;
+    }
+    .conv-avatar {
+        margin-right: 0;
+    }
+    /* New styles for aligning conv-avatar in mobile view */
+    .conv-item {
+        padding: 10px 0; /* Remove horizontal padding from conv-item itself */
+        justify-content: center; /* Center the avatar within the item */
+    }
+}
