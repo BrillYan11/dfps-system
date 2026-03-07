@@ -39,6 +39,7 @@ $config = [
             ['url' => $base . 'profile/index.php', 'icon' => 'bi-person-circle', 'label' => 'My Profile'],
             ['url' => $base . 'da/users.php', 'icon' => 'bi-people', 'label' => 'Users Management'],
             ['url' => $base . 'da/listings.php', 'icon' => 'bi-card-list', 'label' => 'Listings Overview'],
+            ['url' => $base . 'da/message.php', 'icon' => 'bi-chat-dots', 'label' => 'Messages'],
             ['url' => $base . 'da/produce.php', 'icon' => 'bi-egg-fried', 'label' => 'Produce Master List'],
             ['url' => $base . 'da/announcements.php', 'icon' => 'bi-megaphone', 'label' => 'Announcements'],
             ['url' => $base . 'da/send_notification.php', 'icon' => 'bi-broadcast', 'label' => 'Broadcast Alert'],
@@ -78,8 +79,8 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
     include_once __DIR__ . '/NotificationModel.php';
     $unread_notif_count = NotificationModel::countUnread($conn, $_SESSION['user_id']);
     
-    // Message count only for Farmer/Buyer
-    if ($role === 'FARMER' || $role === 'BUYER') {
+    // Message count for Farmer/Buyer/DA
+    if ($role === 'FARMER' || $role === 'BUYER' || $role === 'DA') {
         $msg_count_sql = "SELECT COUNT(id) as c FROM messages m JOIN conversation_participants cp ON m.conversation_id = cp.conversation_id WHERE cp.user_id = ? AND m.sender_id != ? AND m.read_at IS NULL AND m.is_deleted = 0";
         $msg_count_stmt = $conn->prepare($msg_count_sql);
         $msg_count_stmt->bind_param("ii", $_SESSION['user_id'], $_SESSION['user_id']);
@@ -163,8 +164,12 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
   </div>
 
   <div class="header-right">
-    <?php if ($role === 'FARMER' || $role === 'BUYER'): ?>
-    <?php $msg_url = ($role === 'FARMER') ? $base . 'farmer/message.php' : $base . 'buyer/message.php'; ?>
+    <?php if ($role === 'FARMER' || $role === 'BUYER' || $role === 'DA'): ?>
+    <?php 
+        if ($role === 'FARMER') $msg_url = $base . 'farmer/message.php';
+        elseif ($role === 'BUYER') $msg_url = $base . 'buyer/message.php';
+        else $msg_url = $base . 'da/message.php';
+    ?>
     <a href="<?php echo $msg_url; ?>" class="header-item">
       <i class="bi bi-chat-dots"></i>
       <span class="d-none d-md-block">Message</span>

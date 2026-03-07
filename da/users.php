@@ -173,6 +173,7 @@ include '../includes/universal_header.php';
                                     </td>
                                     <td class="text-end pe-4">
                                         <div class="btn-group shadow-sm rounded-pill overflow-hidden">
+                                            <a href="message.php?receiver_id=<?php echo $user['id']; ?>" class="btn btn-sm btn-white border" title="Message User"><i class="bi bi-chat-dots"></i></a>
                                             <?php if($user['role'] === 'FARMER'): ?>
                                                 <a href="listings.php?farmer_id=<?php echo $user['id']; ?>" class="btn btn-sm btn-white border" title="View Listings"><i class="bi bi-grid-3x3"></i></a>
                                             <?php endif; ?>

@@ -42,6 +42,26 @@ $recent_posts = $conn->query("
     LIMIT 5
 ")->fetch_all(MYSQLI_ASSOC);
 
+// 5. Area Distribution
+$area_distribution = $conn->query("
+    SELECT a.name, COUNT(u.id) as user_count 
+    FROM areas a 
+    LEFT JOIN users u ON a.id = u.area_id 
+    GROUP BY a.id, a.name 
+    ORDER BY user_count DESC 
+    LIMIT 5
+")->fetch_all(MYSQLI_ASSOC);
+
+// 6. Top Produce by Listings
+$top_produce = $conn->query("
+    SELECT pr.name, COUNT(p.id) as post_count 
+    FROM produce pr 
+    LEFT JOIN posts p ON pr.id = p.produce_id 
+    GROUP BY pr.id, pr.name 
+    ORDER BY post_count DESC 
+    LIMIT 5
+")->fetch_all(MYSQLI_ASSOC);
+
 include '../includes/universal_header.php';
 ?>
 
@@ -78,9 +98,10 @@ include '../includes/universal_header.php';
             <div class="col-md-8">
                 <h1 class="display-5 fw-bold mb-2">DA Command Center</h1>
                 <p class="lead opacity-75">Ensuring fair market pricing and supporting our local agricultural community.</p>
-                <div class="d-flex gap-2 mt-4">
+                <div class="d-flex gap-2 mt-4 flex-wrap">
                     <a href="announcements.php" class="btn btn-light rounded-pill px-4">Post Announcement</a>
                     <a href="produce.php" class="btn btn-outline-light rounded-pill px-4">Update SRP</a>
+                    <a href="message.php" class="btn btn-warning rounded-pill px-4 text-dark fw-bold"><i class="bi bi-chat-dots-fill me-2"></i>Open Messages</a>
                 </div>
             </div>
             <div class="col-md-4 text-end d-none d-md-block">
@@ -93,36 +114,36 @@ include '../includes/universal_header.php';
     <div class="row g-4 mb-4">
         <div class="col-md-3">
             <a href="users.php?role=FARMER" class="text-decoration-none">
-                <div class="stat-box h-100">
+                <div class="stat-box h-100 shadow-sm border-0">
                     <div class="stat-icon bg-primary text-white"><i class="bi bi-people-fill"></i></div>
-                    <h6 class="text-muted mb-1">Total Farmers</h6>
+                    <h6 class="text-muted mb-1 small fw-bold">Total Farmers</h6>
                     <h3 class="mb-0 text-dark"><?php echo number_format($stats_users['FARMER']); ?></h3>
                 </div>
             </a>
         </div>
         <div class="col-md-3">
             <a href="listings.php?status=ACTIVE" class="text-decoration-none">
-                <div class="stat-box h-100">
+                <div class="stat-box h-100 shadow-sm border-0">
                     <div class="stat-icon bg-success text-white"><i class="bi bi-cart-check-fill"></i></div>
-                    <h6 class="text-muted mb-1">Active Listings</h6>
+                    <h6 class="text-muted mb-1 small fw-bold">Active Listings</h6>
                     <h3 class="mb-0 text-dark"><?php echo number_format($stats_posts['ACTIVE']); ?></h3>
                 </div>
             </a>
         </div>
         <div class="col-md-3">
             <a href="users.php?role=BUYER" class="text-decoration-none">
-                <div class="stat-box h-100">
+                <div class="stat-box h-100 shadow-sm border-0">
                     <div class="stat-icon bg-warning text-white"><i class="bi bi-cash-stack"></i></div>
-                    <h6 class="text-muted mb-1">Total Buyers</h6>
+                    <h6 class="text-muted mb-1 small fw-bold">Total Buyers</h6>
                     <h3 class="mb-0 text-dark"><?php echo number_format($stats_users['BUYER']); ?></h3>
                 </div>
             </a>
         </div>
         <div class="col-md-3">
             <a href="listings.php?status=SOLD" class="text-decoration-none">
-                <div class="stat-box h-100">
+                <div class="stat-box h-100 shadow-sm border-0">
                     <div class="stat-icon bg-info text-white"><i class="bi bi-check-circle-fill"></i></div>
-                    <h6 class="text-muted mb-1">Sold Products</h6>
+                    <h6 class="text-muted mb-1 small fw-bold">Sold Products</h6>
                     <h3 class="mb-0 text-dark"><?php echo number_format($stats_posts['SOLD']); ?></h3>
                 </div>
             </a>
@@ -130,10 +151,11 @@ include '../includes/universal_header.php';
     </div>
 
     <div class="row g-4">
-        <!-- Price Analysis Table -->
+        <!-- Left Column: Price Analysis and More Analytics -->
         <div class="col-lg-7">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-header bg-transparent py-3 border-0">
+            <!-- Price Analysis Table -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-white py-3 border-0">
                     <h5 class="mb-0 fw-bold">Market Price Analysis <small class="text-muted fw-normal">(vs SRP)</small></h5>
                 </div>
                 <div class="card-body p-0">
@@ -161,9 +183,9 @@ include '../includes/universal_header.php';
                                             <td>₱<?php echo number_format($pa['srp'], 2); ?></td>
                                             <td class="text-end pe-4">
                                                 <?php if($is_over): ?>
-                                                    <span class="badge bg-danger">Over SRP</span>
+                                                    <span class="badge bg-danger rounded-pill">Over SRP</span>
                                                 <?php else: ?>
-                                                    <span class="badge bg-success">Below SRP</span>
+                                                    <span class="badge bg-success rounded-pill">Fair Price</span>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>
@@ -174,9 +196,47 @@ include '../includes/universal_header.php';
                     </div>
                 </div>
             </div>
+
+            <!-- Distribution Charts/Lists -->
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-header bg-white py-3 border-0">
+                            <h6 class="mb-0 fw-bold">User Distribution by Area</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <?php foreach($area_distribution as $ad): ?>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 bg-transparent border-0 py-2">
+                                        <div class="small fw-semibold text-dark"><?php echo htmlspecialchars($ad['name'] ?: 'Other'); ?></div>
+                                        <span class="badge bg-light text-dark border rounded-pill"><?php echo $ad['user_count']; ?> Users</span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-header bg-white py-3 border-0">
+                            <h6 class="mb-0 fw-bold">Top Produce by Listings</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <?php foreach($top_produce as $tp): ?>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 bg-transparent border-0 py-2">
+                                        <div class="small fw-semibold text-dark"><?php echo htmlspecialchars($tp['name']); ?></div>
+                                        <span class="badge bg-success-subtle text-success border-success-subtle border rounded-pill"><?php echo $tp['post_count']; ?></span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Recent Activity -->
+        <!-- Right Column: Recent Activity -->
         <div class="col-lg-5">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-header bg-transparent py-3 border-0">
@@ -202,7 +262,7 @@ include '../includes/universal_header.php';
                                                 ₱<?php echo number_format($rp['price'], 2); ?>
                                                 <?php if($is_over_srp): ?><i class="bi bi-arrow-up-circle-fill ms-1"></i><?php endif; ?>
                                             </div>
-                                            <small class="text-muted"><?php echo date('h:i A', strtotime($rp['created_at'])); ?></small>
+                                            <small class="text-muted"><?php echo date('M j, h:i A', strtotime($rp['created_at'])); ?></small>
                                             <div class="mt-2">
                                                 <a href="../buyer/view_post.php?id=<?php echo $rp['id']; ?>" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill py-0 px-2" style="font-size: 0.75rem;">View</a>
                                             </div>
