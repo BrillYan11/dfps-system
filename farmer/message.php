@@ -99,6 +99,7 @@ $conv_query = "
         other_user.role as participant_role,
         other_user.address as participant_address,
         other_user.created_at as participant_since,
+        other_user.profile_picture as participant_profile_picture,
         cp_me.is_archived,
         (SELECT body FROM messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
         (SELECT created_at FROM messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,
@@ -124,7 +125,7 @@ $selected_participant = null;
 if ($selected_conv_id) {
     // We need to fetch participant details separately because they might be archived
     $p_stmt = $conn->prepare("
-        SELECT other_user.id as participant_id, other_user.first_name, other_user.last_name, other_user.role as participant_role, other_user.address as participant_address, other_user.created_at as participant_since, cp_me.is_archived
+        SELECT other_user.id as participant_id, other_user.first_name, other_user.last_name, other_user.role as participant_role, other_user.address as participant_address, other_user.created_at as participant_since, other_user.profile_picture as participant_profile_picture, cp_me.is_archived
         FROM users other_user
         JOIN conversation_participants cp_other ON other_user.id = cp_other.user_id AND cp_other.conversation_id = ?
         JOIN conversation_participants cp_me ON cp_me.conversation_id = cp_other.conversation_id AND cp_me.user_id = ?
@@ -171,12 +172,17 @@ include '../header/headerfarmer.php';
                 <div class="text-center text-muted p-4"><small>No <?php echo $view; ?> conversations.</small></div>
             <?php else: ?>
                 <?php foreach ($conversations as $conv):
-                    $initials = strtoupper(substr($conv['first_name'], 0, 1) . substr($conv['last_name'], 0, 1));
                     $isActive = ($selected_conv_id == $conv['conversation_id']);
                     $disp_msg = $conv['last_message_deleted'] ? 'Message unsent' : ($conv['last_message'] ?: 'No messages yet');
                 ?>
                     <a href="message.php?conv_id=<?php echo $conv['conversation_id']; ?>&view=<?php echo $view; ?>" class="conv-item <?php echo $isActive ? 'active' : ''; ?>">
-                        <div class="conv-avatar"><?php echo $initials; ?></div>
+                        <div class="conv-avatar overflow-hidden">
+                            <?php if (!empty($conv['participant_profile_picture'])): ?>
+                                <img src="../<?php echo $conv['participant_profile_picture']; ?>" class="w-100 h-100" style="object-fit: cover;">
+                            <?php else: ?>
+                                <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                            <?php endif; ?>
+                        </div>
                         <div class="conv-info">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="conv-name text-truncate" style="max-width: 140px;"><?php echo htmlspecialchars($conv['first_name'] . ' ' . $conv['last_name']); ?></div>
@@ -214,8 +220,12 @@ include '../header/headerfarmer.php';
                         </ul>
                     </div>
 
-                    <div class="conv-avatar" style="width: 40px; height: 40px; font-size: 0.85rem; margin-right: 12px;">
-                        <?php echo strtoupper(substr($selected_participant['first_name'], 0, 1) . substr($selected_participant['last_name'], 0, 1)); ?>
+                    <div class="conv-avatar overflow-hidden" style="width: 40px; height: 40px; margin-right: 12px;">
+                        <?php if (!empty($selected_participant['participant_profile_picture'])): ?>
+                            <img src="../<?php echo $selected_participant['participant_profile_picture']; ?>" class="w-100 h-100" style="object-fit: cover;">
+                        <?php else: ?>
+                            <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                        <?php endif; ?>
                     </div>
                     <h6 class="mb-0"><?php echo htmlspecialchars($selected_participant['first_name'] . ' ' . $selected_participant['last_name']); ?></h6>
                 </div>
@@ -227,10 +237,17 @@ include '../header/headerfarmer.php';
             <div class="message-container" id="message-container" data-conv-id="<?php echo $selected_conv_id; ?>" data-last-id="<?php echo empty($messages) ? 0 : end($messages)['id']; ?>">
                 <?php foreach ($messages as $message):
                     $isSent = ($message['sender_id'] == $farmer_id);
-                    $initials = strtoupper(substr($selected_participant['first_name'], 0, 1) . substr($selected_participant['last_name'], 0, 1));
                 ?>
                     <div class="message-row <?php echo $isSent ? 'sent' : 'received'; ?>" data-id="<?php echo $message['id']; ?>">
-                        <?php if (!$isSent): ?><div class="message-avatar"><?php echo $initials; ?></div><?php endif; ?>
+                        <?php if (!$isSent): ?>
+                            <div class="message-avatar overflow-hidden">
+                                <?php if (!empty($selected_participant['participant_profile_picture'])): ?>
+                                    <img src="../<?php echo $selected_participant['participant_profile_picture']; ?>" class="w-100 h-100" style="object-fit: cover;">
+                                <?php else: ?>
+                                    <i class="bi bi-person-circle" style="font-size: 1.2rem;"></i>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                         <div class="message <?php echo $isSent ? 'sent' : 'received'; ?>">
                             <div class="message-body <?php echo $message['is_deleted'] ? 'message-deleted' : ''; ?>">
                                 <?php 
@@ -271,7 +288,13 @@ include '../header/headerfarmer.php';
             <h5 class="info-panel-title">Details</h5>
         </div>
         <div class="info-panel-content">
-            <div class="info-avatar"><?php echo strtoupper(substr($selected_participant['first_name'], 0, 1) . substr($selected_participant['last_name'], 0, 1)); ?></div>
+            <div class="info-avatar overflow-hidden">
+                <?php if (!empty($selected_participant['participant_profile_picture'])): ?>
+                    <img src="../<?php echo $selected_participant['participant_profile_picture']; ?>" class="w-100 h-100" style="object-fit: cover;">
+                <?php else: ?>
+                    <i class="bi bi-person-circle" style="font-size: 3rem;"></i>
+                <?php endif; ?>
+            </div>
             <div class="info-name"><?php echo htmlspecialchars($selected_participant['first_name'] . ' ' . $selected_participant['last_name']); ?></div>
             <div class="info-role"><?php echo ucfirst(strtolower($selected_participant['participant_role'])); ?></div>
             
@@ -300,6 +323,7 @@ include '../header/headerfarmer.php';
 <script>
     var currentUserId = <?php echo $farmer_id; ?>;
     var participantInitials = '<?php echo $selected_participant ? strtoupper(substr($selected_participant['first_name'], 0, 1) . substr($selected_participant['last_name'], 0, 1)) : ""; ?>';
+    var participantProfilePicture = '<?php echo $selected_participant ? $selected_participant['participant_profile_picture'] : ""; ?>';
 
     var messageContainer = document.getElementById('message-container');
     if(messageContainer) { messageContainer.scrollTop = messageContainer.scrollHeight; }

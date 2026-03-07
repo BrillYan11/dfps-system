@@ -1,0 +1,109 @@
+/* Header & Sidebar Styles */
+.app-header { 
+    background-color: var(--primary-color) !important; 
+}
+
+.btn-primary { 
+    background-color: var(--primary-color); 
+    border-color: var(--primary-color); 
+}
+
+.btn-primary:hover { 
+    background-color: var(--secondary-color); 
+    border-color: var(--secondary-color); 
+}
+
+.badge.bg-primary { 
+    background-color: var(--primary-color) !important; 
+}
+
+.text-primary { 
+    color: var(--primary-color) !important; 
+}
+
+/* Sidebar Styles */
+.app-sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background: #fff;
+    z-index: 1050;
+    transition: all 0.3s ease;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.app-sidebar.active {
+    left: 0 !important;
+}
+
+.sidebar-header {
+    padding: 20px;
+    background: var(--primary-color);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar-content {
+    padding: 20px 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 25px;
+    color: #333;
+    text-decoration: none !important;
+    transition: all 0.2s;
+    gap: 15px;
+    font-weight: 500;
+}
+
+.sidebar-link:hover {
+    background: #f0f7f0;
+    color: var(--primary-color);
+}
+
+.sidebar-link i {
+    font-size: 1.2rem;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1040;
+    display: none;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* Existing styles */
+.header-item .badge {
+    position: absolute !important;
+    top: 4px !important;
+    right: 12px !important;
+    transform: translate(50%, -50%) !important;
+    z-index: 10;
+    display: inline-block !important;
+}
+
+.header-item {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+}

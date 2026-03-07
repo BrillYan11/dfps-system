@@ -20,6 +20,7 @@ $conv_query = "
         other_user.first_name,
         other_user.last_name,
         other_user.role as participant_role,
+        other_user.profile_picture as participant_profile_picture,
         cp_me.is_archived,
         (SELECT body FROM messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
         (SELECT created_at FROM messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,

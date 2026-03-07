@@ -138,8 +138,12 @@ include '../header/headerda.php';
                                 <tr>
                                     <td class="ps-4">
                                         <div class="d-flex align-items-center gap-3">
-                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center text-primary fw-bold" style="width: 48px; height: 48px; font-size: 0.9rem; border: 2px solid #eef0f2;">
-                                                <?php echo $initials; ?>
+                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center overflow-hidden" style="width: 48px; height: 48px; border: 2px solid #eef0f2;">
+                                                <?php if (!empty($user['profile_picture'])): ?>
+                                                    <img src="../<?php echo $user['profile_picture']; ?>" class="w-100 h-100" style="object-fit: cover;">
+                                                <?php else: ?>
+                                                    <i class="bi bi-person-circle text-secondary" style="font-size: 32px;"></i>
+                                                <?php endif; ?>
                                             </div>
                                             <div>
                                                 <div class="fw-bold text-dark"><?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></div>

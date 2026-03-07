@@ -1,4 +1,3 @@
-  <!-- Bootstrap JS (local) -->
-  <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?php
+include __DIR__ . '/../includes/universal_footer.php';
+?>

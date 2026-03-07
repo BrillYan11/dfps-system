@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // If we are in a subfolder like 'buyer/', we need '../'
     let basePath = '';
     const path = window.location.pathname;
-    if (path.includes('/buyer/') || path.includes('/farmer/') || path.includes('/da/') || path.includes('/header/') || path.includes('/footer/')) {
+    if (path.includes('/buyer/') || path.includes('/farmer/') || path.includes('/da/') || path.includes('/profile/') || path.includes('/header/') || path.includes('/footer/')) {
         basePath = '../';
     }
 
@@ -190,19 +190,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let html = '';
         conversations.forEach(conv => {
-            const initials = (conv.first_name[0] + conv.last_name[0]).toUpperCase();
             const isActive = (selectedId == conv.conversation_id);
             const dispMsg = conv.last_message_deleted ? 'Message unsent' : (conv.last_message || 'No messages yet');
             const unreadBadge = conv.unread_count > 0 ? `<span class="badge rounded-pill bg-danger" style="font-size: 0.65rem;">${conv.unread_count}</span>` : '';
             const msgClass = (conv.last_message_deleted ? 'fst-italic' : '') + (conv.unread_count > 0 ? ' fw-bold text-dark' : '');
             
+            // Profile Picture or Icon
+            let avatarContent = '';
+            if (conv.participant_profile_picture) {
+                avatarContent = `<img src="${basePath}${conv.participant_profile_picture}" class="w-100 h-100" style="object-fit: cover;" onerror="this.parentElement.innerHTML='<i class=\'bi bi-person-circle\' style=\'font-size: 1.5rem;\'></i>'">`;
+            } else {
+                avatarContent = `<i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>`;
+            }
+
             // Basic HTML escaping for safety
             const fullName = (conv.first_name + ' ' + conv.last_name).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             const safeMsg = dispMsg.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
             html += `
                 <a href="message.php?conv_id=${conv.conversation_id}&view=${view}" class="conv-item ${isActive ? 'active' : ''}">
-                    <div class="conv-avatar">${initials}</div>
+                    <div class="conv-avatar overflow-hidden">${avatarContent}</div>
                     <div class="conv-info">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="conv-name text-truncate" style="max-width: 140px;">${fullName}</div>
@@ -431,8 +438,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 let avatarHtml = '';
                 if (!isSent) {
-                    const initials = (typeof participantInitials !== 'undefined') ? participantInitials : '??';
-                    avatarHtml = `<div class="message-avatar">${initials}</div>`;
+                    let avatarContent = '';
+                    if (typeof participantProfilePicture !== 'undefined' && participantProfilePicture) {
+                        avatarContent = `<img src="${basePath}${participantProfilePicture}" class="w-100 h-100" style="object-fit: cover;">`;
+                    } else {
+                        avatarContent = `<i class="bi bi-person-circle" style="font-size: 1.2rem;"></i>`;
+                    }
+                    avatarHtml = `<div class="message-avatar overflow-hidden">${avatarContent}</div>`;
                 }
 
                 const time = new Date(msg.created_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
