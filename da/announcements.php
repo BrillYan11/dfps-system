@@ -2,6 +2,7 @@
 session_start();
 include '../includes/db.php';
 include '../includes/NotificationModel.php';
+include '../includes/pagination.php';
 
 // Authentication and Authorization Check
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'DA') {
@@ -12,6 +13,21 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'DA') {
 $da_id = $_SESSION['user_id'];
 $success_msg = '';
 $error_msg = '';
+
+// Handle Announcement Deletion
+if (isset($_GET['delete'])) {
+    $id_to_delete = filter_input(INPUT_GET, 'delete', FILTER_VALIDATE_INT);
+    if ($id_to_delete) {
+        $stmt = $conn->prepare("DELETE FROM announcements WHERE id = ?");
+        $stmt->bind_param("i", $id_to_delete);
+        if ($stmt->execute()) {
+            $success_msg = "Announcement deleted successfully.";
+        } else {
+            $error_msg = "Error deleting announcement: " . $conn->error;
+        }
+        $stmt->close();
+    }
+}
 
 // Handle Announcement Creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_announcement'])) {
@@ -43,13 +59,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_announcement']
     }
 }
 
-// Fetch existing announcements
+// --- Pagination Logic ---
+$page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+$limit = 10;
+$offset = ($page - 1) * $limit;
+
+$total_rows = $conn->query("SELECT COUNT(*) FROM announcements")->fetch_row()[0];
+$total_pages = ceil($total_rows / $limit);
+
+// Fetch existing announcements with pagination
 $announcements = $conn->query("
     SELECT a.*, ar.name as area_name, u.first_name, u.last_name 
     FROM announcements a 
     LEFT JOIN areas ar ON a.area_id = ar.id 
     JOIN users u ON a.da_id = u.id 
     ORDER BY a.created_at DESC
+    LIMIT $limit OFFSET $offset
 ")->fetch_all(MYSQLI_ASSOC);
 
 // Fetch areas for the dropdown
@@ -104,16 +129,16 @@ include '../includes/universal_header.php';
                 <div class="card-header bg-transparent py-3 border-0">
                     <h5 class="mb-0 fw-bold">Announcement History</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="bg-light">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light text-muted">
                                 <tr>
-                                    <th>Date</th>
+                                    <th class="ps-4">Date</th>
                                     <th>Area</th>
                                     <th>Title</th>
                                     <th>Author</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="text-end pe-4">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -122,13 +147,19 @@ include '../includes/universal_header.php';
                                 <?php else: ?>
                                     <?php foreach($announcements as $ann): ?>
                                         <tr>
-                                            <td><small><?php echo date('M j, Y h:i A', strtotime($ann['created_at'])); ?></small></td>
+                                            <td class="ps-4"><small><?php echo date('M j, Y h:i A', strtotime($ann['created_at'])); ?></small></td>
                                             <td><span class="badge <?php echo $ann['area_id'] ? 'bg-info' : 'bg-secondary'; ?>"><?php echo htmlspecialchars($ann['area_name'] ?: 'Global'); ?></span></td>
                                             <td class="fw-semibold"><?php echo htmlspecialchars($ann['title']); ?></td>
                                             <td><?php echo htmlspecialchars($ann['first_name'].' '.$ann['last_name']); ?></td>
-                                            <td class="text-end">
-                                                <button class="btn btn-sm btn-outline-primary rounded-circle" title="View details"><i class="bi bi-eye"></i></button>
-                                                <button class="btn btn-sm btn-outline-danger rounded-circle" title="Delete"><i class="bi bi-trash"></i></button>
+                                            <td class="text-end pe-4">
+                                                <button class="btn btn-sm btn-outline-primary rounded-circle view-details" 
+                                                        data-title="<?php echo htmlspecialchars($ann['title']); ?>"
+                                                        data-body="<?php echo htmlspecialchars($ann['body']); ?>"
+                                                        title="View details"><i class="bi bi-eye"></i></button>
+                                                <a href="announcements.php?delete=<?php echo $ann['id']; ?>" 
+                                                   class="btn btn-sm btn-outline-danger rounded-circle" 
+                                                   onclick="return confirm('Delete this announcement?')"
+                                                   title="Delete"><i class="bi bi-trash"></i></a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -137,9 +168,49 @@ include '../includes/universal_header.php';
                         </table>
                     </div>
                 </div>
+                <?php if ($total_pages > 1): ?>
+                <div class="card-footer bg-white py-3 border-0 border-top">
+                    <?php renderPagination($page, $total_pages); ?>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </main>
+
+<!-- Modal for Viewing Announcement -->
+<div class="modal fade" id="announcementModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="modalTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-3">
+        <p id="modalBody" style="white-space: pre-wrap;"></p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const viewBtns = document.querySelectorAll('.view-details');
+        const modal = new bootstrap.Modal(document.getElementById('announcementModal'));
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+
+        viewBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                modalTitle.innerText = this.dataset.title;
+                modalBody.innerText = this.dataset.body;
+                modal.show();
+            });
+        });
+    });
+</script>
 
 <?php include '../includes/universal_footer.php'; ?>
