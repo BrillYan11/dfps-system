@@ -1,6 +1,7 @@
 <?php
 session_start();
 include '../includes/db.php';
+include '../includes/pagination.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'DA') {
     header("Location: ../login.php");
@@ -185,21 +186,7 @@ include '../includes/universal_header.php';
 
         <?php if ($total_pages > 1): ?>
         <div class="card-footer bg-white py-3 border-0 border-top">
-            <nav aria-label="Page navigation">
-                <ul class="pagination pagination-sm justify-content-center mb-0">
-                    <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
-                        <a class="page-link rounded-pill px-3 me-2" href="?role=<?php echo $role_filter; ?>&page=<?php echo $page - 1; ?>">Previous</a>
-                    </li>
-                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
-                            <a class="page-link rounded-circle mx-1" href="?role=<?php echo $role_filter; ?>&page=<?php echo $i; ?>" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><?php echo $i; ?></a>
-                        </li>
-                    <?php endfor; ?>
-                    <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
-                        <a class="page-link rounded-pill px-3 ms-2" href="?role=<?php echo $role_filter; ?>&page=<?php echo $page + 1; ?>">Next</a>
-                    </li>
-                </ul>
-            </nav>
+            <?php renderPagination($page, $total_pages); ?>
         </div>
         <?php endif; ?>
     </div>
