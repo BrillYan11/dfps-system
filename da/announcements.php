@@ -55,7 +55,7 @@ $announcements = $conn->query("
 // Fetch areas for the dropdown
 $areas = $conn->query("SELECT id, name FROM areas ORDER BY name ASC")->fetch_all(MYSQLI_ASSOC);
 
-include '../header/headerda.php';
+include '../includes/universal_header.php';
 ?>
 
 <main class="container-fluid px-4 my-4">
@@ -142,4 +142,4 @@ include '../header/headerda.php';
     </div>
 </main>
 
-<?php include '../footer/footerda.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

@@ -25,7 +25,7 @@ function get_notification_icon($type) {
     }
 }
 
-include '../header/headerbuyer.php';
+include '../includes/universal_header.php';
 ?>
 
 <link rel="stylesheet" href="../css/notification.css?v=<?php echo time(); ?>">
@@ -107,4 +107,4 @@ include '../header/headerbuyer.php';
   </div>
 </main>
 
-<?php include '../footer/footerbuyer.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

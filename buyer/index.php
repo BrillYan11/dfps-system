@@ -117,7 +117,7 @@ while ($ann_row = $ann_result->fetch_assoc()) {
 $ann_stmt->close();
 
 
-include '../header/headerbuyer.php';
+include '../includes/universal_header.php';
 ?>
 
   <!-- Page Layout -->
@@ -372,4 +372,4 @@ include '../header/headerbuyer.php';
     });
   </script>
 
-<?php include '../footer/footerbuyer.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

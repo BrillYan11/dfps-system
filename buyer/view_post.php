@@ -107,7 +107,7 @@ while ($row = $img_result->fetch_assoc()) {
 $img_stmt->close();
 
 
-include '../header/headerbuyer.php';
+include '../includes/universal_header.php';
 ?>
 
 <div class="container my-4">
@@ -201,4 +201,4 @@ include '../header/headerbuyer.php';
     </div>
 </div>
 
-<?php include '../footer/footerbuyer.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

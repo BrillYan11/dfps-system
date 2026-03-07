@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->close();
 }
 
-include 'header.php';
+include 'includes/universal_header.php';
 ?>
 
 <div class="container mt-5">
@@ -175,4 +175,4 @@ include 'header.php';
 </div>
 
 <script src="bootstrap/js/location.js"></script>
-<?php include 'footer.php'; ?>
+<?php include 'includes/universal_footer.php'; ?>

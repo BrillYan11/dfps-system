@@ -146,7 +146,7 @@ if ($selected_conv_id) {
 }
 
 $body_class = 'messaging-page';
-include '../header/headerfarmer.php';
+include '../includes/universal_header.php';
 ?>
 <link rel="stylesheet" href="../css/message.css?v=<?php echo time(); ?>">
 
@@ -350,4 +350,4 @@ include '../header/headerfarmer.php';
         });
     }
 </script>
-<?php include '../footer/footerfarmer.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

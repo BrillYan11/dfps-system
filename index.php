@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'header.php';
+include 'includes/universal_header.php';
 ?>
 
 <div class="container mt-5">
@@ -34,4 +34,4 @@ include 'header.php';
     </div>
 </div>
 
-<?php include 'footer.php'; ?>
+<?php include 'includes/universal_footer.php'; ?>

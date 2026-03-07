@@ -83,20 +83,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Choose header based on role
-switch ($role) {
-    case 'FARMER':
-        include '../header/headerfarmer.php';
-        break;
-    case 'BUYER':
-        include '../header/headerbuyer.php';
-        break;
-    case 'DA':
-        include '../header/headerda.php';
-        break;
-    default:
-        include '../header.php';
-}
+// Use universal header
+include '../includes/universal_header.php';
 ?>
 
 <div class="container my-5">
@@ -204,17 +192,5 @@ function previewImage(input) {
 </script>
 
 <?php
-switch ($role) {
-    case 'FARMER':
-        include '../footer/footerfarmer.php';
-        break;
-    case 'BUYER':
-        include '../footer/footerbuyer.php';
-        break;
-    case 'DA':
-        include '../footer/footerda.php';
-        break;
-    default:
-        include '../footer.php';
-}
+include '../includes/universal_footer.php';
 ?>

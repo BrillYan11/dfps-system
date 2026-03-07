@@ -41,7 +41,7 @@ $stmt->execute();
 $users = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
-include '../header/headerda.php';
+include '../includes/universal_header.php';
 ?>
 
 <style>
@@ -203,4 +203,4 @@ include '../header/headerda.php';
     </div>
 </main>
 
-<?php include '../footer/footerda.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

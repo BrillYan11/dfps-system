@@ -54,7 +54,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-include '../header/headerfarmer.php';
+include '../includes/universal_header.php';
 ?>
 
 <div class="container my-4">
@@ -105,4 +105,4 @@ include '../header/headerfarmer.php';
     </div>
 </div>
 
-<?php include '../footer/footerfarmer.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

@@ -66,7 +66,7 @@ $ann_result = $ann_stmt->get_result();
 while ($ann_row = $ann_result->fetch_assoc()) { $announcements[] = $ann_row; }
 $ann_stmt->close();
 
-include '../header/headerfarmer.php';
+include '../includes/universal_header.php';
 ?>
 
   <main class="container-fluid px-4 my-3">
@@ -318,4 +318,4 @@ include '../header/headerfarmer.php';
     });
   </script>
 
-<?php include '../footer/footerfarmer.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

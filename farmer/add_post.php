@@ -114,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 
-include '../header/headerfarmer.php';
+include '../includes/universal_header.php';
 ?>
 
 <div class="container my-4">
@@ -216,4 +216,4 @@ document.getElementById('produce-select').addEventListener('change', function() 
 </script>
 
 
-<?php include '../footer/footerfarmer.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

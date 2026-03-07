@@ -42,7 +42,7 @@ $recent_posts = $conn->query("
     LIMIT 5
 ")->fetch_all(MYSQLI_ASSOC);
 
-include '../header/headerda.php';
+include '../includes/universal_header.php';
 ?>
 
 <style>
@@ -219,4 +219,4 @@ include '../header/headerda.php';
     </div>
 </main>
 
-<?php include '../footer/footerda.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

@@ -19,7 +19,7 @@ function get_notification_icon($type) {
     }
 }
 
-include '../header/headerda.php';
+include '../includes/universal_header.php';
 ?>
 
 <link rel="stylesheet" href="../css/notification.css?v=<?php echo time(); ?>">
@@ -89,4 +89,4 @@ include '../header/headerda.php';
   </div>
 </main>
 
-<?php include '../footer/footerda.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>

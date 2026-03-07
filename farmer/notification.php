@@ -22,7 +22,7 @@ function get_notification_icon($type) {
     }
 }
 
-include '../header/headerfarmer.php';
+include '../includes/universal_header.php';
 ?>
 
 <link rel="stylesheet" href="../css/notification.css?v=<?php echo time(); ?>">
@@ -104,4 +104,4 @@ include '../header/headerfarmer.php';
   </div>
 </main>
 
-<?php include '../footer/footerfarmer.php'; ?>
+<?php include '../includes/universal_footer.php'; ?>
