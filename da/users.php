@@ -120,19 +120,18 @@ include '../includes/universal_header.php';
             
             <!-- Search Form -->
             <div class="flex-grow-1 mx-md-4" style="max-width: 400px;">
-                <form action="users.php" method="GET" class="input-group input-group-sm">
+                <form action="users.php" method="GET">
                     <?php if ($role_filter): ?>
                         <input type="hidden" name="role" value="<?php echo htmlspecialchars($role_filter); ?>">
                     <?php endif; ?>
-                    <input type="text" name="search" class="form-control rounded-start-pill ps-3" 
-                           placeholder="Search by name, email, or username..." 
-                           value="<?php echo htmlspecialchars($search ?? ''); ?>">
-                    <button class="btn btn-primary rounded-end-pill px-3" type="submit">
-                        <i class="bi bi-search"></i>
-                    </button>
-                    <?php if ($search): ?>
-                        <a href="users.php?role=<?php echo htmlspecialchars($role_filter ?? ''); ?>" class="btn btn-outline-secondary border-0 ms-1 small d-flex align-items-center">Clear</a>
-                    <?php endif; ?>
+                    <div class="search-wrapper">
+                        <input type="text" name="search" class="search-pill" 
+                               placeholder="Search by name, email, or username..." 
+                               value="<?php echo htmlspecialchars($search ?? ''); ?>">
+                        <button type="submit" class="search-btn border-0">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
                 </form>
             </div>
 
